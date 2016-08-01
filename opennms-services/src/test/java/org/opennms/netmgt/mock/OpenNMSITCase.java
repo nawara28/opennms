@@ -179,14 +179,11 @@ public class OpenNMSITCase {
                 eventExpander.setEventUtil(eventUtil);
                 eventExpander.afterPropertiesSet();
 
-                EventIpcBroadcastProcessor eventIpcBroadcastProcessor = new EventIpcBroadcastProcessor(m_registry);
-                eventIpcBroadcastProcessor.setEventIpcBroadcaster(m_eventdIpcMgr);
-                eventIpcBroadcastProcessor.afterPropertiesSet();
-
                 BasicEventHandler eventHandler = new BasicEventHandler();
                 eventHandler.setEventProcessors(Arrays.asList(
-                    eventExpander,
-                    eventIpcBroadcastProcessor
+                    eventExpander
+                    // There is no {@link org.opennms.netmgt.events.api.EventIpcBroadcaster} 
+                    // handler here transmit events to EventListeners.
                 ));
 
                 m_eventdIpcMgr.setEventHandler(eventHandler);
