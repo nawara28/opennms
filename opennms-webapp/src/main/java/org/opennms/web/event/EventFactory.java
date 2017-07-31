@@ -34,6 +34,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.ServletContext;
@@ -47,6 +48,8 @@ import org.opennms.web.event.filter.NodeFilter;
 import org.opennms.web.event.filter.ServiceFilter;
 import org.opennms.web.event.filter.SeverityFilter;
 import org.opennms.web.filter.Filter;
+
+import com.google.common.collect.Maps;
 
 /**
  * Encapsulates all querying functionality for events.
@@ -204,6 +207,31 @@ public class EventFactory {
         }
 
         return event;
+    }
+
+    public static Map<String, String> getParmsForEventId(int eventId) throws SQLException {
+        final Connection conn = DataSourceFactory.getInstance().getConnection();
+        final DBUtils d = new DBUtils(EventFactory.class, conn);
+
+        final Map<String, String> result = Maps.newHashMap();
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT name, value FROM event_parameters WHERE event_id = ?");
+            d.watch(stmt);
+            stmt.setInt(1, eventId);
+
+            ResultSet rs = stmt.executeQuery();
+            d.watch(rs);
+
+            while (rs.next()) {
+                result.put(rs.getString("name"), rs.getString("value"));
+            }
+
+        } finally {
+            d.cleanUp();
+        }
+
+        return result;
     }
 
     /**
@@ -847,61 +875,6 @@ public class EventFactory {
     }
 
     /**
-     * Return all unacknowledged events sorted by time for that have the given
-     * distributed poller.
-     *
-     * @param poller a {@link java.lang.String} object.
-     * @return an array of {@link org.opennms.web.event.Event} objects.
-     * @throws java.sql.SQLException if any.
-     */
-    public static Event[] getEventsForPoller(String poller) throws SQLException {
-        return getEventsForPoller(poller, false);
-    }
-
-    /**
-     * Return all events (optionally only unacknowledged events) sorted by time
-     * that have the given distributed poller.
-     *
-     * @param poller a {@link java.lang.String} object.
-     * @param includeAcknowledged a boolean.
-     * @return an array of {@link org.opennms.web.event.Event} objects.
-     * @throws java.sql.SQLException if any.
-     */
-    public static Event[] getEventsForPoller(String poller, boolean includeAcknowledged) throws SQLException {
-        if (poller == null) {
-            throw new IllegalArgumentException("Cannot take null parameters.");
-        }
-
-        Event[] events = null;
-        final Connection conn = DataSourceFactory.getInstance().getConnection();
-        final DBUtils d = new DBUtils(EventFactory.class, conn);
-
-        try {
-            StringBuffer select = new StringBuffer("SELECT events.*, monitoringsystems.id AS systemId, monitoringsystems.label AS systemLabel, monitoringsystems.location AS location FROM events LEFT JOIN monitoringsystems ON events.systemid=monitoringsystems.id WHERE monitoringsystems.type='OpenNMS' AND systemLabel=?");
-
-            if (!includeAcknowledged) {
-                select.append(" AND EVENTACKUSER IS NULL");
-            }
-
-            select.append(" AND EVENTDISPLAY='Y' ");
-            select.append(" ORDER BY EVENTID DESC");
-
-            final PreparedStatement stmt = conn.prepareStatement(select.toString());
-            d.watch(stmt);
-            stmt.setString(1, poller);
-
-            final ResultSet rs = stmt.executeQuery();
-            d.watch(rs);
-
-            events = rs2Events(rs);
-        } finally {
-            d.cleanUp();
-        }
-
-        return events;
-    }
-
-    /**
      * Acknowledge a list of events with the given username and the current
      * time.
      *
@@ -1229,7 +1202,7 @@ public class EventFactory {
             event.host = rs.getString("eventHost");
             event.snmphost = rs.getString("eventSnmpHost");
             event.dpName = rs.getString("systemLabel");
-            event.parms = rs.getString("eventParms");
+            event.parms = EventFactory.getParmsForEventId(event.id);
 
             // node id can be null
             Object element = rs.getObject("nodeID");

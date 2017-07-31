@@ -34,7 +34,6 @@ import java.util.Date;
 
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opennms.core.test.MockLogAppender;
@@ -746,7 +745,7 @@ public class AlarmRestServiceIT extends AbstractSpringJerseyRestTestCase {
         alarm.setSeverity(severity);
         alarm.setFirstEventTime(event.getEventTime());
         alarm.setLastEvent(event);
-        alarm.setEventParms(event.getEventParms());
+        alarm.setEventParametersRef(event);
         alarm.setServiceType(m_databasePopulator.getServiceTypeDao().findByName("ICMP"));
         m_databasePopulator.getAlarmDao().save(alarm);
         m_databasePopulator.getAlarmDao().flush();
