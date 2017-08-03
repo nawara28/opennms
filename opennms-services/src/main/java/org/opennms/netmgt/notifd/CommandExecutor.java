@@ -65,7 +65,7 @@ public class CommandExecutor implements ExecutorStrategy {
     public int execute(String commandLine, List<Argument> arguments) {
         int returnCode = 0;
 
-        List<String> commandList = new ArrayList<String>();
+        List<String> commandList = new ArrayList<>();
         commandList.add(commandLine);
 
         StringBuffer streamBuffer = new StringBuffer();

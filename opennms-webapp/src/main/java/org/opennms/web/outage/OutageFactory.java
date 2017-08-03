@@ -556,7 +556,7 @@ public class OutageFactory extends Object {
      */
     protected static Outage[] rs2Outages(ResultSet rs) throws SQLException {
         Outage[] outages = null;
-        List<Outage> list = new ArrayList<Outage>();
+        List<Outage> list = new ArrayList<>();
 
         // FIXME: Don't reuse the "element" variable for multiple objects.
         while (rs.next()) {

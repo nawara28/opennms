@@ -197,7 +197,7 @@ final class TcpStreamHandler implements Runnable {
          * the descriptor is close a EOFException is
          * passed on the list.
          */
-        final LinkedList<Object> pipeXchange = new LinkedList<Object>();
+        final LinkedList<Object> pipeXchange = new LinkedList<>();
         final TcpRecordHandler chunker = new TcpRecordHandler(m_connection, pipeXchange);
         final Thread tchunker = new Thread(chunker, "TCPRecord Chunker[" + InetAddressUtils.str(m_connection.getInetAddress()) + ":" + m_connection.getPort() + "]");
         synchronized (tchunker) {

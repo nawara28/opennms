@@ -47,7 +47,7 @@ import junit.framework.TestCase;
  */
 public class CorrelatorTest extends TestCase {
 	
-	List<Object> mocks = new ArrayList<Object>();
+	List<Object> mocks = new ArrayList<>();
 	private EventIpcManager m_eventIpcManager;
 	private CorrelationEngine m_engine;
 	private Correlator m_correlator;

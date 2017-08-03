@@ -120,7 +120,7 @@ public abstract class StringUtils {
     }
 
     private static class CommandArrayGenerator {
-        private final ArrayList<String> m_segments = new ArrayList<String>();
+        private final ArrayList<String> m_segments = new ArrayList<>();
         private boolean m_isInQuotes = false;
         private StringBuffer m_segmentBuffer = new StringBuffer();
 

@@ -139,8 +139,8 @@ public final class UdpEventReceiver implements EventReceiver, UdpEventReceiverMB
         m_ipAddress = ipAddress;
         m_dgPort = port;
 
-        m_eventsIn = new LinkedList<UdpReceivedEvent>();
-        m_eventUuidsOut = new LinkedList<UdpReceivedEvent>();
+        m_eventsIn = new LinkedList<>();
+        m_eventUuidsOut = new LinkedList<>();
 
         m_eventHandlers = new ArrayList<EventHandler>(3);
         m_status = START_PENDING;

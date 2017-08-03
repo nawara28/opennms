@@ -1213,7 +1213,7 @@ public class EventFactory {
      */
     protected static Event[] rs2Events(ResultSet rs) throws SQLException {
         Event[] events = null;
-        Vector<Event> vector = new Vector<Event>();
+        Vector<Event> vector = new Vector<>();
 
         while (rs.next()) {
             Event event = new Event();

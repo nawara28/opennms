@@ -156,7 +156,7 @@ final class TcpServer implements Runnable {
         m_parent = parent;
         m_tcpPort = port;
         m_ipAddress = address;
-        m_receivers = new LinkedList<TcpStreamHandler>();
+        m_receivers = new LinkedList<>();
         m_stop = false;
         m_context = null;
         m_handlers = handlers;

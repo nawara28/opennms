@@ -176,7 +176,7 @@ public class DefaultSiteStatusServiceIT implements InitializingBean {
         createOutageForNodeInCategory("Routers");
         createOutageForNodeInCategory("Servers");
 
-        Set<AggregateStatusDefinition> defs = new LinkedHashSet<AggregateStatusDefinition>();
+        Set<AggregateStatusDefinition> defs = new LinkedHashSet<>();
 
         AggregateStatusDefinition definition;
         definition = new AggregateStatusDefinition("Routers", Collections.singleton(new OnmsCategory("Routers")));

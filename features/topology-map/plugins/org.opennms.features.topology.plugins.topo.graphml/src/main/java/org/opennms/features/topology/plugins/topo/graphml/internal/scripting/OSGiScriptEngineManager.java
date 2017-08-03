@@ -148,7 +148,7 @@ public class OSGiScriptEngineManager extends ScriptEngineManager{
         return null;
     }
     public List<ScriptEngineFactory> getEngineFactories() {
-        List<ScriptEngineFactory> osgiFactories=new ArrayList<ScriptEngineFactory>();
+        List<ScriptEngineFactory> osgiFactories=new ArrayList<>();
         for(ScriptEngineManager engineManager: classLoaders.keySet()){
             for (ScriptEngineFactory factory : engineManager.getEngineFactories()){
                 osgiFactories.add(new OSGiScriptEngineFactory(factory, classLoaders.get(engineManager)));
@@ -208,7 +208,7 @@ public class OSGiScriptEngineManager extends ScriptEngineManager{
      */
     private List<ClassLoader> findClassLoaders(BundleContext context) throws IOException{
         Bundle[] bundles = context.getBundles();
-        List<ClassLoader> factoryCandidates = new ArrayList<ClassLoader>();
+        List<ClassLoader> factoryCandidates = new ArrayList<>();
         for (Bundle bundle : bundles) {
             if ("system.bundle".equals(bundle.getSymbolicName())) {
                 continue;

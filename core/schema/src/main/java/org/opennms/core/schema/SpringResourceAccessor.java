@@ -62,7 +62,7 @@ public class SpringResourceAccessor implements ResourceAccessor {
     /** {@inheritDoc} */
     @Override
     public Enumeration<URL> getResources(final String packageName) throws IOException {
-    	final Vector<URL> tmp = new Vector<URL>();
+    	final Vector<URL> tmp = new Vector<>();
         tmp.add(getResource(packageName).getURL());
         LOG.debug("resources for {}: {}", packageName, tmp);
         return tmp.elements();

@@ -87,7 +87,7 @@ public class EngineConfiguration implements Serializable {
     //----------------/
 
     public EngineConfiguration() {
-        this._ruleSetList = new ArrayList<RuleSet>();
+        this._ruleSetList = new ArrayList<>();
     }
 
 
@@ -299,7 +299,7 @@ public class EngineConfiguration implements Serializable {
 		
 		LOG.info("Creating drools engins for configuration {}.", basePath);
 
-		List<CorrelationEngine> engineList = new ArrayList<CorrelationEngine>();
+		List<CorrelationEngine> engineList = new ArrayList<>();
 		for (final RuleSet ruleSet : getRuleSet()) {
 			LOG.debug("Constucting engind for ruleset {} in configuration {}.", ruleSet.getName(), basePath);
 			engineList.add(ruleSet.constructEngine(basePath, appContext, eventIpcManager, metricRegistry));

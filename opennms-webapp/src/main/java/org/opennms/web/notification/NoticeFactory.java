@@ -709,7 +709,7 @@ public class NoticeFactory {
     // FIXME: Don't use the single variable "element" for different objects. - dj@opennms.org
     protected static Notification[] rs2Notices(ResultSet rs, ServletContext servletContext) throws SQLException {
         Notification[] notices = null;
-        Vector<Notification> vector = new Vector<Notification>();
+        Vector<Notification> vector = new Vector<>();
 
         while (rs.next()) {
             Notification notice = new Notification();

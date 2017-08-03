@@ -198,7 +198,7 @@ public class Sftp3gppUrlConnection extends SftpUrlConnection {
      */
     @SuppressWarnings("unchecked")
     public List<String> getFileList() throws SftpException, IOException {
-        List<String> files = new ArrayList<String>();
+        List<String> files = new ArrayList<>();
         Vector<LsEntry> entries = getChannel().ls(url.getPath());
         for (LsEntry entry : entries) {
             if (entry.getFilename().startsWith("."))

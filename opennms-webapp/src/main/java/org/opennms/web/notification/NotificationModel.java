@@ -165,7 +165,7 @@ public class NotificationModel extends Object {
      */
     protected static Notification[] rs2NotifyBean(Connection conn, ResultSet rs) throws SQLException {
         Notification[] notices = null;
-        Vector<Notification> vector = new Vector<Notification>();
+        Vector<Notification> vector = new Vector<>();
 
         try {
 
