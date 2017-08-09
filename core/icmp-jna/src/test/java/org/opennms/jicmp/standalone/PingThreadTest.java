@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2011-2014 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2014 The OpenNMS Group, Inc.
+ * Copyright (C) 2011-2017 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2017 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -31,13 +31,11 @@ package org.opennms.jicmp.standalone;
 import static org.junit.Assume.assumeTrue;
 
 import java.net.Inet4Address;
-import java.net.InetAddress;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.sun.jna.Platform;
+import org.opennms.core.utils.InetAddressUtils;
 
 
 /**
@@ -64,7 +62,7 @@ public class PingThreadTest {
         try {
         listener.start();
         
-        listener.ping((Inet4Address)InetAddress.getByName("127.0.0.1"), 1000, 0, pingCount, 1000);
+        listener.ping((Inet4Address)InetAddressUtils.getLocalHostAddress(), 1000, 0, pingCount, 1000);
         
         } finally {
             listener.stop();
@@ -110,7 +108,7 @@ public class PingThreadTest {
             public void run() {
                 try {
                     Thread.sleep(id/10);
-                    listener.ping((Inet4Address)InetAddress.getByName("127.0.0.1"), id, 0, count, 1000);
+                    listener.ping((Inet4Address)InetAddressUtils.getLocalHostAddress(), id, 0, count, 1000);
                 } catch(Throwable e) {
                     e.printStackTrace();
                 }

@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2011-2014 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2014 The OpenNMS Group, Inc.
+ * Copyright (C) 2011-2017 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2017 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -47,6 +47,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.opennms.core.utils.InetAddressUtils;
 
 /**
  * NativeSocketTest
@@ -56,22 +57,28 @@ import org.junit.Test;
 public class NativeSocketTest {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
+    private static final int SERVER_PORT = 7777;
+
     private static final ExecutorService m_executor = Executors.newCachedThreadPool();
 
-    Server m_server;
+    private InetAddress m_localhostV4 = InetAddressUtils.getLocalHostAddress();
+    private InetAddress m_localhostV6 = InetAddressUtils.addr("::1");
 
+    Server m_server;
 
     @Before
     public void setUp() throws Exception {
         assumeTrue(Boolean.getBoolean("runPingTests"));
-        m_server = new Server(7777);
+        m_server = new Server(SERVER_PORT);
         m_server.start();
         m_server.waitForStart();
     }
 
     @After
     public void tearDown() throws InterruptedException {
-        m_server.stop();
+        if (m_server != null) {
+            m_server.stop();
+        }
     }
 
     public void printf(final String fmt, final Object... args) {
@@ -92,7 +99,7 @@ public class NativeSocketTest {
                         printf("Sending cmd: %s\n", cmd);
 
                         final byte[] data = cmd.getBytes("UTF-8");
-                        final DatagramPacket p = new DatagramPacket(data, data.length, InetAddress.getByName("127.0.0.1"), 7777);
+                        final DatagramPacket p = new DatagramPacket(data, data.length, m_localhostV4, 7777);
                         sock.send(p);
 
                         printf("Receiving...\n");
@@ -121,13 +128,14 @@ public class NativeSocketTest {
     @Test
     public void testNativeV4() throws Exception {
         printf("Testing IPv4(%d)\n", NativeDatagramSocket.PF_INET);
-        testNative(NativeDatagramSocket.PF_INET, InetAddress.getByName("127.0.0.1"));
+        testNative(NativeDatagramSocket.PF_INET, m_localhostV4);
     }
 
     @Test
     public void testNativeV6() throws Exception {
+        assumeTrue(!Boolean.getBoolean("skipIpv6Tests"));
         printf("Testing IPv6(%d)\n", NativeDatagramSocket.PF_INET6);
-        testNative(NativeDatagramSocket.PF_INET6, InetAddress.getByName("::1"));
+        testNative(NativeDatagramSocket.PF_INET6, m_localhostV6);
     }
 
     private void testNative(final int family, final InetAddress address) throws Exception {
@@ -188,7 +196,7 @@ public class NativeSocketTest {
             final FutureTask<NativeDatagramPacket> task = new FutureTask<NativeDatagramPacket>(new Callable<NativeDatagramPacket>() {
                 @Override public NativeDatagramPacket call() throws Exception {
                     final ByteBuffer buf = UTF_8.encode("msg1");
-                    final NativeDatagramPacket p = new NativeDatagramPacket(buf, InetAddress.getByName("127.0.0.1"), 7777); 
+                    final NativeDatagramPacket p = new NativeDatagramPacket(buf, m_localhostV4, 7777);
                     sock.send(p);
 
                     final NativeDatagramPacket r = new NativeDatagramPacket(128);

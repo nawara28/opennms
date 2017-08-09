@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2011-2014 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2014 The OpenNMS Group, Inc.
+ * Copyright (C) 2011-2017 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2017 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -28,16 +28,18 @@
 
 package org.opennms.jicmp.jna;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeTrue;
 
-import java.net.InetAddress;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import org.junit.Test;
+import org.opennms.core.utils.InetAddressUtils;
 
 import com.sun.jna.LastErrorException;
 import com.sun.jna.Native;
@@ -107,6 +109,8 @@ public class ByteBufferTest {
     
     @Test(timeout=30000)
     public void testPassing() throws Exception {
+        assumeTrue(Boolean.getBoolean("runPingTests"));
+
         Server server = new Server(7777);
         server.start();
         server.waitForStart();
@@ -123,7 +127,7 @@ public class ByteBufferTest {
             
             socket = socket(NativeDatagramSocket.PF_INET, NativeDatagramSocket.SOCK_DGRAM, NativeDatagramSocket.IPPROTO_UDP);
 
-            sockaddr_in destAddr = new sockaddr_in(InetAddress.getLocalHost(), 7777);
+            sockaddr_in destAddr = new sockaddr_in(InetAddressUtils.getLocalHostAddress(), 7777);
             sendto(socket, buf, buf.remaining(), 0, destAddr, destAddr.size());
 
             
