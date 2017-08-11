@@ -35,6 +35,8 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -64,6 +66,8 @@ import org.springframework.test.context.ContextConfiguration;
 @JUnitConfigurationEnvironment
 @JUnitTemporaryDatabase
 public class JdbcQueryDetectorTest implements InitializingBean {
+
+    private static final Pattern JDBC_PATTERN = Pattern.compile(".*//([^\\:]+)\\:(\\d+)/.*");
 
     @Autowired
     public JdbcQueryDetector m_detector;
@@ -102,6 +106,28 @@ public class JdbcQueryDetectorTest implements InitializingBean {
         m_detector.setUser(username);
         m_detector.setPassword("");
         m_detector.setSqlQuery("select count(nodeid) from node");
+
+        final String mockDbUrl = System.getProperty("mock.db.url");
+        if (mockDbUrl != null && mockDbUrl.contains("jdbc:postgresql")) {
+            final Matcher m = JDBC_PATTERN.matcher(mockDbUrl);
+            if (m.matches()) {
+                m_detector.setUrl(mockDbUrl);
+                final Integer port = Integer.valueOf(m.group(2), 10);
+                if (port != null) {
+                    m_detector.setPort(port);
+                }
+            }
+        }
+
+        final String mockDbAdminUser = System.getProperty("mock.db.adminUser");
+        if (mockDbAdminUser != null && !"".equals(mockDbAdminUser.trim())) {
+            m_detector.setUser(mockDbAdminUser);
+        }
+
+        final String mockDbAdminPassword = System.getProperty("mock.db.adminPassword");
+        if (mockDbAdminPassword != null) {
+            m_detector.setPassword(mockDbAdminPassword);
+        }
     }
 
     @After
